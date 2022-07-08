@@ -835,8 +835,15 @@ int main(int argc, char **argv)
         return -1;
     }
 
+    ipc_mq = mq_open("/ipc_dispatch", O_RDWR);
+    if (ipc_mq == -1) {
+        dump_string(_F_, _FU_, _L_, "open queue fail!\n");
+        munmap(g_p2ptnp_info.mmap_info, sizeof(mmap_info_s));
+        return -2;
+    }
     printf("Size of mmap.info: %d\n", sizeof(mmap_info_s));
 
+    mq_close(ipc_mq);
     munmap(g_p2ptnp_info.mmap_info, sizeof(mmap_info_s));
 
     return 0;
