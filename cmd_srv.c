@@ -843,6 +843,10 @@ int main(int argc, char **argv)
     }
     printf("Size of mmap.info: %d\n", sizeof(mmap_info_s));
 
+    if (mic_volume != -1) {
+        p2p_set_mic_volume(mic_volume);
+    }
+
     mq_close(ipc_mq);
     munmap(g_p2ptnp_info.mmap_info, sizeof(mmap_info_s));
 
