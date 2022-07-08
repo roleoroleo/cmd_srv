@@ -12,6 +12,8 @@
 #include <sys/time.h>
 #include <sys/mman.h>
 #include <arpa/inet.h>
+#include <limits.h>
+#include <errno.h>
 #include "cmd_srv.h"
 
 #define MMAP_SIZE 2508
@@ -748,8 +750,85 @@ int p2p_set_viewpoint_trace(unsigned char mode)
     return ret;
 }
 
+void print_usage(char *progname)
+{
+    fprintf(stderr, "\nUsage: %s OPTIONS\n\n", progname);
+    fprintf(stderr, "\t-m MIC_VOLUME, --mic_volume MIC_VOLUME\n");
+    fprintf(stderr, "\t\tset mic volume\n");
+    fprintf(stderr, "\t-d, --debug\n");
+    fprintf(stderr, "\t\tenable debug\n");
+    fprintf(stderr, "\t-h, --help\n");
+    fprintf(stderr, "\t\tprint this help\n");
+}
+
 int main(int argc, char **argv)
 {
+    int errno;
+    char *endptr;
+    int c;
+
+    int mic_volume = -1;
+    int debug = 0;
+
+    while (1) {
+        static struct option long_options[] =
+        {
+            {"mic_volume",  required_argument, 0, 'm'},
+            {"debug",  no_argument, 0, 'd'},
+            {"help",  no_argument, 0, 'h'},
+            {0, 0, 0, 0}
+        };
+        /* getopt_long stores the option index here. */
+        int option_index = 0;
+
+        c = getopt_long (argc, argv, "m:dh",
+                         long_options, &option_index);
+
+        /* Detect the end of the options. */
+        if (c == -1)
+            break;
+
+        switch (c) {
+        case 'm':
+            errno = 0;    /* To distinguish success/failure after call */
+            mic_volume = strtol(optarg, &endptr, 10);
+
+            /* Check for various possible errors */
+            if ((errno == ERANGE && (mic_volume == LONG_MAX || mic_volume == LONG_MIN)) || (errno != 0)) {
+                print_usage(argv[0]);
+                exit(EXIT_FAILURE);
+            }
+            if (endptr == optarg) {
+                print_usage(argv[0]);
+                exit(EXIT_FAILURE);
+            }
+            break;
+
+        case 'd':
+            fprintf (stderr, "debug on\n");
+            debug = 1;
+            break;
+
+        case 'h':
+            print_usage(argv[0]);
+            exit(EXIT_SUCCESS);
+            break;
+
+        case '?':
+            /* getopt_long already printed an error message. */
+            break;
+
+        default:
+            print_usage(argv[0]);
+            exit(EXIT_SUCCESS);
+        }
+    }
+
+    if (argc == 1) {
+        print_usage(argv[0]);
+        exit(EXIT_SUCCESS);
+    }
+
     if((g_p2ptnp_info.mmap_info = (mmap_info_s *) get_sharemem(MMAP_FILE_NAME, sizeof(mmap_info_s))) == NULL)
     {
         dump_string(_F_, _FU_, _L_, "open share mem fail!\n");
