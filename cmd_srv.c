@@ -4,6 +4,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <getopt.h>
+#include <stdarg.h>
 #include <signal.h>
 #include <unistd.h>
 #include <mqueue.h>
@@ -20,7 +21,7 @@ g_p2ptnp_info_s g_p2ptnp_info;
 mqd_t ipc_mq;
 unsigned char *mmap_file; // memory mapped file
 
-void dump_string(char *source_file, const char *func, int line, char *text)
+void dump_string(char *source_file, const char *func, int line, char *text, ...)
 {
     time_t now;
     struct tm *s_now;
@@ -34,8 +35,12 @@ void dump_string(char *source_file, const char *func, int line, char *text)
     s_now = localtime(&now);
     if (s_now != 0) {
         gettimeofday((struct timeval *) &tv, NULL);
-        printf("\n%s(%s-%d)[%02d:%02d:%02d.%03d]:%s", source_file, func, line, s_now->tm_hour,
-                s_now->tm_min, s_now->tm_sec, tv.tv_usec >> 10, text);
+        printf("\n%s(%s-%d)[%02d:%02d:%02d.%03d]:", source_file, func, line, s_now->tm_hour,
+                s_now->tm_min, s_now->tm_sec, tv.tv_usec >> 10);
+        va_list args;
+        va_start (args, text);
+        vfprintf(stdout, text, args);
+        va_end (args);
         putchar(10);
     }
     return;
@@ -162,12 +167,12 @@ int p2p_set_power(MSG_TYPE msg_type)
 
     if (p2p_send_msg(ipc_mq, msg_type, NULL, 0) < 0)
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_power send_msg fail!\n");
+        dump_string(_F_, _FU_, _L_, "p2p_set_power send_msg fail!\n");
         return -1;
     }
     else
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_power send_msg ok!\n");
+        dump_string(_F_, _FU_, _L_, "p2p_set_power send_msg ok!\n");
 
         count_down = 10;
         while (count_down)
@@ -196,12 +201,12 @@ int p2p_set_light(MSG_TYPE msg_type)
 
     if (p2p_send_msg(ipc_mq, msg_type, NULL, 0) < 0)
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_light send_msg fail!\n");
+        dump_string(_F_, _FU_, _L_, "p2p_set_light send_msg fail!\n");
         return -1;
     }
     else
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_light send_msg ok!\n");
+        dump_string(_F_, _FU_, _L_, "p2p_set_light send_msg ok!\n");
 
         count_down = 10;
         while (count_down)
@@ -230,12 +235,12 @@ int p2p_set_motion_record(MSG_TYPE msg_type)
 
     if (p2p_send_msg(ipc_mq, msg_type, NULL, 0) < 0)
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_motion_record send_msg fail!\n");
+        dump_string(_F_, _FU_, _L_, "p2p_set_motion_record send_msg fail!\n");
         return -1;
     }
     else
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_motion_record send_msg ok!\n");
+        dump_string(_F_, _FU_, _L_, "p2p_set_motion_record send_msg ok!\n");
 
         count_down = 10;
         while (count_down)
@@ -264,12 +269,12 @@ int p2p_set_mirror_flip(MSG_TYPE msg_type)
 
     if (p2p_send_msg(ipc_mq, msg_type, NULL, 0) < 0)
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_mirror_flip send_msg fail!\n");
+        dump_string(_F_, _FU_, _L_, "p2p_set_mirror_flip send_msg fail!\n");
         return -1;
     }
     else
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_mirror_flip send_msg ok!\n");
+        dump_string(_F_, _FU_, _L_, "p2p_set_mirror_flip send_msg ok!\n");
 
         count_down = 10;
         while (count_down)
@@ -302,12 +307,12 @@ int p2p_set_motion_detect(int index, motion_rect_t motion_rect, int nIOCtrlCmdNu
 
     if (p2p_send_msg(ipc_mq, RMM_SET_MOTION_DETECT, (char *)&motion_rect, sizeof(motion_rect_t)) < 0)
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_motion_detect send_msg fail!\n");
+        dump_string(_F_, _FU_, _L_, "p2p_set_motion_detect send_msg fail!\n");
         return -1;
     }
     else
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_motion_detect send_msg ok!\n");
+        dump_string(_F_, _FU_, _L_, "p2p_set_motion_detect send_msg ok!\n");
 
         cnt_down = 10;
         while (cnt_down)
@@ -352,12 +357,12 @@ int p2p_set_alarm_mode(int alarm_mode)
 
     if (p2p_send_msg(ipc_mq, RMM_SET_HUMAN_MOTION, (char *)&alarm_mode, sizeof(alarm_mode)) < 0)
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_alarm_mode %d send_msg fail!\n", alarm_mode);
+        dump_string(_F_, _FU_, _L_, "p2p_set_alarm_mode %d send_msg fail!\n", alarm_mode);
         return -1;
     }
     else
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_alarm_mode %d send_msg ok!\n", alarm_mode);
+        dump_string(_F_, _FU_, _L_, "p2p_set_alarm_mode %d send_msg ok!\n", alarm_mode);
 
         count_down = 10;
         while (count_down)
@@ -385,12 +390,12 @@ int p2p_set_day_night_mode(MSG_TYPE msg_type, int value)
 
     if (p2p_send_msg(ipc_mq, msg_type, (char *)&value, sizeof(value)) < 0)
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_day_night_mode %d send_msg fail!\n", value);
+        dump_string(_F_, _FU_, _L_, "p2p_set_day_night_mode %d send_msg fail!\n", value);
         return -1;
     }
     else
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_day_night_mode %d send_msg ok!\n", value);
+        dump_string(_F_, _FU_, _L_, "p2p_set_day_night_mode %d send_msg ok!\n", value);
 
         count_down = 10;
         while (count_down)
@@ -413,12 +418,12 @@ int p2p_set_alarm_sensitivity(int sensitivity)
 
     if (p2p_send_msg(ipc_mq, RMM_SET_MOTION_SENSITIVITY, (char *)&sensitivity, sizeof(sensitivity)) < 0)
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_alarm_sensitivity %d send_msg fail!\n", sensitivity);
+        dump_string(_F_, _FU_, _L_, "p2p_set_alarm_sensitivity %d send_msg fail!\n", sensitivity);
         return -1;
     }
     else
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_alarm_sensitivity %d send_msg ok!\n", sensitivity);
+        dump_string(_F_, _FU_, _L_, "p2p_set_alarm_sensitivity %d send_msg ok!\n", sensitivity);
 
         count_down = 10;
         while (count_down)
@@ -453,7 +458,7 @@ int p2p_set_video_backup_state(int index, video_backup_state_set *backup_state, 
     {
         if (p2p_send_msg(ipc_mq, DISPATCH_SET_VIDEO_BACKUP_STATE, (char *)backup_state, sizeof(video_backup_state_set_resp)) < 0)
         {
-            // dump_string(_F_, _FU_, _L_, "p2p_set_video_backup_state fail!\n");
+            dump_string(_F_, _FU_, _L_, "p2p_set_video_backup_state fail!\n");
             return -1;
         }
 
@@ -484,12 +489,12 @@ int p2p_set_encode_mode(int value)
 
     if (p2p_send_msg(ipc_mq, RMM_SET_ENCODE_MODE, (char *)&value, sizeof(value)) < 0)
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_encode_mode %d send_msg fail!\n", value);
+        dump_string(_F_, _FU_, _L_, "p2p_set_encode_mode %d send_msg fail!\n", value);
         return -1;
     }
     else
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_encode_mode %d send_msg ok!\n", value);
+        dump_string(_F_, _FU_, _L_, "p2p_set_encode_mode %d send_msg ok!\n", value);
 
         count_down = 10;
         while (count_down)
@@ -512,12 +517,12 @@ int p2p_set_high_resolution(int value)
 
     if (p2p_send_msg(ipc_mq, RMM_SET_HIGH_RESOLUTION, (char *)&value, sizeof(value)) < 0)
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_high_resolution %d send_msg fail!\n", value);
+        dump_string(_F_, _FU_, _L_, "p2p_set_high_resolution %d send_msg fail!\n", value);
         return -1;
     }
     else
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_high_resolution %d send_msg ok!\n", value);
+        dump_string(_F_, _FU_, _L_, "p2p_set_high_resolution %d send_msg ok!\n", value);
 
         count_down = 10;
         while (count_down)
@@ -600,7 +605,7 @@ int p2p_set_ldc(int percent)
 
     if (p2p_send_msg(ipc_mq, RMM_SET_LDC, (char *)&percent, sizeof(percent)) < 0)
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_ldc send_msg fail!\n");
+        dump_string(_F_, _FU_, _L_, "p2p_set_ldc send_msg fail!\n");
         ret = -1;
     }
 
@@ -625,7 +630,7 @@ int p2p_set_baby_cry(int enable)
 
     if (p2p_send_msg(ipc_mq, RMM_SET_BABY_CRY, (char *)&enable, sizeof(enable)) < 0)
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_baby_cry send_msg fail!\n");
+        dump_string(_F_, _FU_, _L_, "p2p_set_baby_cry send_msg fail!\n");
         ret = -1;
     }
 
@@ -650,7 +655,7 @@ int p2p_set_abnormal_sound(int enable)
 
     if (p2p_send_msg(ipc_mq, RMM_SET_ABNORMAL_SOUND, (char *)&enable, sizeof(enable)) < 0)
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_abnormal_sound send_msg fail!\n");
+        dump_string(_F_, _FU_, _L_, "p2p_set_abnormal_sound send_msg fail!\n");
         ret = -1;
     }
 
@@ -675,7 +680,7 @@ int p2p_set_abnormal_sound_sensitivity(int value)
 
     if (p2p_send_msg(ipc_mq, RMM_SET_ABNORMAL_SOUND_SENSITIVITY, (char *)&value, sizeof(value)) < 0)
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_abnormal_sound_sensitivity send_msg fail!\n");
+        dump_string(_F_, _FU_, _L_, "p2p_set_abnormal_sound_sensitivity send_msg fail!\n");
         ret = -1;
     }
 
@@ -700,7 +705,7 @@ int p2p_set_mic_volume(int percent)
 
     if (p2p_send_msg(ipc_mq, RMM_SET_MIC_VOLUME, (char *)&percent, sizeof(percent)) < 0)
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_mic_volume send_msg fail!\n");
+        dump_string(_F_, _FU_, _L_, "p2p_set_mic_volume send_msg fail!\n");
         ret = -1;
     }
 
@@ -725,7 +730,7 @@ int p2p_set_viewpoint_trace(unsigned char mode)
 
     if (p2p_send_msg(ipc_mq, DISPATCH_SET_VIEWPOINT_TRACE, (char *)&mode, sizeof(mode)) < 0)
     {
-        // dump_string(_F_, _FU_, _L_, "p2p_set_viewpoint_trace send_msg fail!\n");
+        dump_string(_F_, _FU_, _L_, "p2p_set_viewpoint_trace send_msg fail!\n");
         ret = -1;
     }
 
