@@ -141,7 +141,7 @@ int p2p_set_mirror_flip(MSG_TYPE msg_type)
     }
 }
 
-int p2p_set_motion_detect(int index, motion_rect_t motion_rect, int nIOCtrlCmdNum)
+int p2p_set_motion_detect(motion_rect_t motion_rect)
 {
     int cnt_down = 0;
 //    motion_rect_t motion_rect;
@@ -213,16 +213,17 @@ int p2p_set_alarm_mode(int alarm_mode)
     }
 }
 
-int p2p_set_day_night_mode(MSG_TYPE msg_type, int value)
+int p2p_set_day_night_mode(int value)
 {
     int count_down = 0;
 
-    if (msg_type != RMM_SET_DAY_NIGHT_MODE)
+/*    if (msg_type != RMM_SET_DAY_NIGHT_MODE)
     {
         return -1;
     }
 
-    if (p2p_send_msg(ipc_mq, msg_type, (char *)&value, sizeof(value)) < 0)
+    if (p2p_send_msg(ipc_mq, msg_type, (char *)&value, sizeof(value)) < 0) */
+    if (p2p_send_msg(ipc_mq, RMM_SET_DAY_NIGHT_MODE, (char *)&value, sizeof(value)) < 0)
     {
         dump_string(_F_, _FU_, _L_, "p2p_set_day_night_mode %d send_msg fail!\n", value);
         return -1;
