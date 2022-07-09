@@ -215,6 +215,8 @@ void print_usage(char *progname)
     fprintf(stderr, "\t\tvalue to set\n");
     fprintf(stderr, "\t-d, --debug\n");
     fprintf(stderr, "\t\tenable debug\n");
+    fprintf(stderr, "\t-l, --list\n");
+    fprintf(stderr, "\t\tprint all available parameters\n");
     fprintf(stderr, "\t-h, --help\n");
     fprintf(stderr, "\t\tprint this help\n");
 }
@@ -237,6 +239,7 @@ int main(int argc, char **argv)
             {"set",  required_argument, 0, 's'},
             {"get",  required_argument, 0, 'g'},
             {"value",  required_argument, 0, 'v'},
+            {"list",  no_argument, 0, 'l'},
             {"debug",  no_argument, 0, 'd'},
             {"help",  no_argument, 0, 'h'},
             {0, 0, 0, 0}
@@ -324,6 +327,10 @@ int main(int argc, char **argv)
     if (argc == 1) {
         print_usage(argv[0]);
         exit(EXIT_SUCCESS);
+    }
+    if ((set == 1) && (value[0] == '\0')) {
+        print_usage(argv[0]);
+        exit(EXIT_FAILURE);
     }
 
     if((g_p2ptnp_info.mmap_info = (mmap_info_s *) get_sharemem(MMAP_FILE_NAME, sizeof(mmap_info_s))) == NULL)
