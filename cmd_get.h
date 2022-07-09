@@ -20,3 +20,5 @@ int p2p_get_abnormal_sound(int enable);
 int p2p_get_abnormal_sound_sensitivity(int value);
 int p2p_get_mic_volume();
 int p2p_get_viewpoint_trace(unsigned char mode);
+
+int cloud_get_tz_offset();

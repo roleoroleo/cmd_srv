@@ -523,3 +523,12 @@ int p2p_set_viewpoint_trace(unsigned char mode)
 
     return ret;
 }
+
+int cloud_set_tz_offset(int tz_offset)
+{
+    if(cloud_send_msg(ipc_mq, DISPATCH_SET_TZ_OFFSET, (char *)&tz_offset, sizeof(tz_offset)) < 0)
+    {
+        dump_string(_F_, _FU_, _L_,  "cloud_set_tz_offset %d send_msg msg fail!\n", tz_offset);
+    }
+    return 0;
+}

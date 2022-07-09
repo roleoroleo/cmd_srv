@@ -138,3 +138,10 @@ int p2p_get_alarm_sensitivity()
     ret = g_p2ptnp_info.mmap_info->motion_sensitivity;
     printf("p2p_get_alarm_sensitivity() return (%d) \n", ret);
 }
+
+int cloud_get_tz_offset()
+{
+    int ret;
+    ret = g_p2ptnp_info.mmap_info->tz_offset;
+    printf("p2p_get_tz_offset() return (%d) \n", ret);
+}

@@ -132,66 +132,68 @@ typedef struct
     char mac[32];				// 0x358 char[17]
     unsigned char unknown_06[0x11e];		// 0x378
     int irlight_mode_no;			// 0x496 int (4 bytes) TODO: check this field against offset 0x5e8
-    unsigned char unknown_07[0x2e];		// 0x49a
+    unsigned char unknown_07[0xa];		// 0x49a
+    int tz_offset;				// 0x4a4 int (4 bytes)
+    unsigned char unknown_08[0x20];		// 0x4a8
     int ldc_percent;				// 0x4c8 int (4 bytes)
     int baby_cry_enable;			// 0x4cc int (4 bytes)
     int abnormal_sound_enable;			// 0x4d0 int (4 bytes)
     int human_motion_enable;			// 0x4d4 int (4 bytes)
     int mic_volume;				// 0x4d8 int (4 bytes)
     int panorama_capture_state;			// 0x4dc int (4 bytes)
-    unsigned char unknown_08[0x4];		// 0x4e0
+    unsigned char unknown_09[0x4];		// 0x4e0
     int encode_mode;				// 0x4e4 int (4 bytes)
     int high_resolution;			// 0x4e8 int (4 bytes)
     char pre_pwd[16];				// 0x4ec char[15]
-    unsigned char unknown_09[0x10];		// 0x4fc
+    unsigned char unknown_10[0x10];		// 0x4fc
     char pwd[16];				// 0x50c char[15]
-    unsigned char unknown_10[0x10];		// 0x51c
-    unsigned char unknown_11[0x10];		// 0x52c
-    unsigned char unknown_12[0x10];		// 0x53c
-    unsigned char unknown_13[0x24];		// 0x54c
+    unsigned char unknown_11[0x10];		// 0x51c
+    unsigned char unknown_12[0x10];		// 0x52c
+    unsigned char unknown_13[0x10];		// 0x53c
+    unsigned char unknown_14[0x24];		// 0x54c
     int in_packet_loss;				// 0x570 int (4 bytes)
     int out_packet_loss;			// 0x574 int (4 bytes)
-    unsigned char unknown_14[0x8];		// 0x578
+    unsigned char unknown_15[0x8];		// 0x578
     int sd_size;				// 0x580 int (4 bytes)
     int sd_leftsize;				// 0x584 int (4 bytes)
-    unsigned char unknown_15[0x30];		// 0x588
+    unsigned char unknown_16[0x30];		// 0x588
     motion_rect_t motion_rect;			// 0x5b8 motion_rect (16 bytes)
-    unsigned char unknown_16[0x10];		// 0x5c8
+    unsigned char unknown_17[0x10];		// 0x5c8
     int mirror;					// 0x5d8 int (4 bytes)
     int light_mode;				// 0x5dc int (4 bytes)
     int power_mode;				// 0x5e0 int (4 bytes)
-    unsigned char unknown_17[0x4];		// 0x5e4
+    unsigned char unknown_18[0x4];		// 0x5e4
     int irlight_mode;				// 0x5e8 int (4 bytes)
     int record_mode;				// 0x5ec int (4 bytes)
-    unsigned char unknown_18[0x27c];		// 0x5f0
+    unsigned char unknown_19[0x27c];		// 0x5f0
     int debug_mode;				// 0x86c int (4 bytes)
     int video_occlusion;			// 0x870 int (4 bytes)
-    unsigned char unknown_19[0x8];		// 0x874
+    unsigned char unknown_20[0x8];		// 0x874
     int ptz_sleep;				// 0x87c int (4 bytes)
     int ptz_cruise_flag;			// 0x880 int (4 bytes)
-    unsigned char unknown_20[0x8];		// 0x884
+    unsigned char unknown_21[0x8];		// 0x884
     ptz_info_t ptz_info[8];			// 0x88c ptz_info_t[8] (96 bytes)
     int ptz_panoramic_sleep;			// 0x8ec int (4 bytes)
     int ptz_cruise_mode;			// 0x8f0 int (4 bytes)
     int ptz_cruise_start_time;			// 0x8f4 int (4 bytes)
     int ptz_cruise_end_time;			// 0x8f8 int (4 bytes)
     int ptz_motion_track_switch;		// 0x8fc int (4 bytes)
-    unsigned char unknown_21[0x6];		// 0x900
+    unsigned char unknown_22[0x6];		// 0x900
     unsigned char is_xiaomirouter;		// 0x906 unsigned char (1 byte)
     unsigned char motion_sensitivity;		// 0x907 unsigned char (1 byte)
     unsigned char abnormal_sound_sensitivity;	// 0x908 unsigned char (1 byte)
-    unsigned char unknown_22[0x3];		// 0x909
+    unsigned char unknown_23[0x3];		// 0x909
     tf_status_t tf_status;			// 0x90c tf_status_t (? bytes)
-    unsigned char unknown_23[0x50];		// 0x910
+    unsigned char unknown_24[0x50];		// 0x910
     video_backup_info_t video_backup_info;	// 0x960 video_backup_info (28 bytes)
-    unsigned char unknown_24[0xc];		// 0x97c
+    unsigned char unknown_25[0xc];		// 0x97c
     unsigned char viewpoint_trace;		// 0x988 unsigned char (1 byte)
     unsigned char voice_ctrl;			// 0x989 unsigned char (1 byte)
-    unsigned char unknown_25[0x1e];		// 0x98a
+    unsigned char unknown_26[0x1e];		// 0x98a
     int lapse_video_enable;			// 0x9a8 int (4 bytes)
-    unsigned char unknown_26[0x4];		// 0x9ac
+    unsigned char unknown_27[0x4];		// 0x9ac
     int lapse_video_end_time;			// 0x9b0 int (4 bytes)
-    unsigned char unknown_27[0xc];		// 0x9b4
+    unsigned char unknown_28[0xc];		// 0x9b4
     unsigned char speak_mode;			// 0x9c0 unsigned char (1 byte)
     char aec_key[11];				// 0x9c1 char[11]
 } __attribute__((packed)) mmap_info_s;
@@ -281,6 +283,7 @@ typedef enum {
     DISPATCH_SET_MIRROR_ON = 0x7a,
     DISPATCH_SET_MIRROR_OFF = 0x7b,
     DISPATCH_SET_TNP_INIT_STATUS = 0x7f,
+    DISPATCH_SET_TZ_OFFSET = 0x8e,
     DISPATCH_P2P_CONNECTTED = 0xe1,
     DISPATCH_P2P_DISCONNECTTED = 0xe2,
     DISPATCH_P2P_VIEWING = 0xe3,

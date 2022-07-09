@@ -347,6 +347,7 @@ int main(int argc, char **argv)
             printf("\thuman_motion_enable\n");
             printf("\tirlight_mode\n");
             printf("\tmotion_sensitivity\n");
+            printf("\ttz_offset\n");
             exit(EXIT_SUCCESS);
             break;
 
@@ -462,6 +463,13 @@ int main(int argc, char **argv)
                 return -2;
             }
             p2p_set_alarm_sensitivity(ivalue);
+        } else if (strcmp("tz_offset", param) == 0) {
+            ivalue = str2int(value);
+            if (ivalue == -1) {
+                printf("Invalid value: %s\n", value);
+                return -2;
+            }
+            cloud_set_tz_offset(ivalue);
         } else {
             printf("Invalid parameter: %s\n", param);
         }
@@ -484,6 +492,8 @@ int main(int argc, char **argv)
             p2p_get_day_night_mode();
         } else if (strcmp("motion_sensitivity", param) == 0) {
             p2p_get_alarm_sensitivity();
+        } else if (strcmp("tz_offset", param) == 0) {
+            cloud_get_tz_offset();
         } else {
             printf("Invalid parameter: %s\n", param);
         }
