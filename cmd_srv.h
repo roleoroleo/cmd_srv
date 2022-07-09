@@ -12,7 +12,7 @@
 
 #define MID_P2P 1
 #define MID_RMM 2
-//#define MID_CLOUD 2
+#define MID_CLOUD 4
 #define MID_DISPATCH 4
 #define MID_RCD 0x10
 
@@ -329,5 +329,6 @@ typedef struct
 
 void dump_string(char *source_file, const char *func, int line, char *text, ...);
 int p2p_send_msg(mqd_t mqfd, MSG_TYPE msg_type, char *payload, int payload_len);
+int cloud_send_msg(mqd_t mqfd, MSG_TYPE msg_type, char *payload, int payload_len);
 
 #endif

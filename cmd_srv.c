@@ -158,6 +158,52 @@ int p2p_send_msg(mqd_t mqfd, MSG_TYPE msg_type, char *payload, int payload_len)
     return fsMsgRet;
 }
 
+int cloud_send_msg(mqd_t mqfd, MSG_TYPE msg_type, char *payload, int payload_len)
+{
+    mqueue_msg_header_t MsgHead;
+    char send_buf[1024] = {0};
+    int send_len = 0;
+    int fsMsgRet = 0;
+
+    memset(&MsgHead, 0, sizeof(MsgHead));
+    MsgHead.srcMid = MID_CLOUD;
+    MsgHead.mainOp = msg_type;
+    MsgHead.subOp = 1;
+    MsgHead.msgLength = payload_len;
+
+    switch(msg_type)
+    {
+    case RCD_START_SHORT_VIDEO:
+    case RCD_START_SHORT_VIDEO_10S:
+    case RCD_START_VOICECMD_VIDEO:
+        MsgHead.dstMid = MID_RCD;
+        break;
+    case RMM_START_CAPTURE:
+    case RMM_SPEAK_BAN_DEVICE:
+    case RMM_START_PANORAMA_CAPTURE:
+    case RMM_ABORT_PANORAMA_CAPTURE:
+        MsgHead.dstMid = MID_RMM;
+        break;
+    case CLOUD_DEBUG_ALARM:
+        MsgHead.dstMid = MID_CLOUD;
+        break;
+    default:
+        MsgHead.dstMid = MID_DISPATCH;
+        break;
+    }
+
+    memcpy(send_buf, &MsgHead, sizeof(MsgHead));
+    if(NULL!=payload && payload_len>0)
+    {
+        memcpy(send_buf + sizeof(MsgHead), payload, payload_len);
+    }
+    send_len = sizeof(MsgHead) + payload_len;
+
+    fsMsgRet = mqueue_send(mqfd, send_buf, send_len);
+
+    return fsMsgRet;
+}
+
 /* Only positive numbers */
 int str2int(char *value)
 {
