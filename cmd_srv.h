@@ -1,4 +1,8 @@
+#ifndef CMD_SRV_H
+#define CMD_SRV_H
+
 #include <stdlib.h>
+#include <mqueue.h>
 
 #define _F_	__FILE__
 #define _FU_	__FUNCTION__
@@ -322,3 +326,8 @@ typedef struct
     int resolution;
     rect_t rect;
 } SMsAVIoctrlMotionDetectCfg;
+
+void dump_string(char *source_file, const char *func, int line, char *text, ...);
+int p2p_send_msg(mqd_t mqfd, MSG_TYPE msg_type, char *payload, int payload_len);
+
+#endif
