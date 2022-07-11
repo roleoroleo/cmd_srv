@@ -1,4 +1,4 @@
-OBJECTS = cmd_srv.o cmd_set.o cmd_get.o
+OBJECTS = cmd_srv.o cmd_set.o cmd_get.o cmd_other.o
 LIBS = -lpthread -lrt
 
 all: cmd_srv
@@ -10,6 +10,9 @@ cmd_set.o: cmd_set.c $(HEADERS)
 	$(CC) -c $< -fPIC -O2 -o $@
 
 cmd_get.o: cmd_get.c $(HEADERS)
+	$(CC) -c $< -fPIC -O2 -o $@
+
+cmd_other.o: cmd_other.c $(HEADERS)
 	$(CC) -c $< -fPIC -O2 -o $@
 
 cmd_srv: $(OBJECTS)

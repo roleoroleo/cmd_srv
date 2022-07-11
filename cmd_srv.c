@@ -16,10 +16,15 @@
 #include <errno.h>
 #include "cmd_set.h"
 #include "cmd_get.h"
+#include "cmd_other.h"
 #include "cmd_srv.h"
 
 #define MMAP_SIZE 2508
 #define MMAP_FILE_NAME "/tmp/mmap.info"
+
+#define OPT_GET 0
+#define OPT_SET 1
+#define OPT_COMMAND 2
 
 g_p2ptnp_info_s g_p2ptnp_info;
 mqd_t ipc_mq;
@@ -259,6 +264,8 @@ void print_usage(char *progname)
     fprintf(stderr, "\t\tget PARAM value\n");
     fprintf(stderr, "\t-v VALUE, --value VALUE\n");
     fprintf(stderr, "\t\tvalue to set\n");
+    fprintf(stderr, "\t-c CMD, --command CMD\n");
+    fprintf(stderr, "\t\tsend CMD command\n");
     fprintf(stderr, "\t-d, --debug\n");
     fprintf(stderr, "\t\tenable debug\n");
     fprintf(stderr, "\t-l, --list\n");
@@ -273,9 +280,10 @@ int main(int argc, char **argv)
     char *endptr;
     int c;
 
-    int set = 0;
+    int option = OPT_GET;
     char param[1024];
     char value[1024] = {0};
+    char command[1024] = {0};
     int ivalue;
     int debug = 0;
 
@@ -286,6 +294,7 @@ int main(int argc, char **argv)
             {"get",  required_argument, 0, 'g'},
             {"value",  required_argument, 0, 'v'},
             {"list",  no_argument, 0, 'l'},
+            {"command",  required_argument, 0, 'c'},
             {"debug",  no_argument, 0, 'd'},
             {"help",  no_argument, 0, 'h'},
             {0, 0, 0, 0}
@@ -293,7 +302,7 @@ int main(int argc, char **argv)
         /* getopt_long stores the option index here. */
         int option_index = 0;
 
-        c = getopt_long (argc, argv, "s:g:v:ldh",
+        c = getopt_long (argc, argv, "s:g:v:c:ldh",
                          long_options, &option_index);
 
         /* Detect the end of the options. */
@@ -303,7 +312,7 @@ int main(int argc, char **argv)
         switch (c) {
         case 's':
         case 'g':
-            if (c == 's') set = 1;
+            if (c == 's') option = OPT_SET;
             if (strlen(optarg) < sizeof(param) - 1) {
                 strcpy(param, optarg);
             } else {
@@ -348,7 +357,21 @@ int main(int argc, char **argv)
             printf("\tirlight_mode\n");
             printf("\tmotion_sensitivity\n");
             printf("\ttz_offset\n");
+            printf("\n");
+            printf("List of commands:\n");
+            printf("\tcap_pic\n");
+            printf("\tmake_video\n");
             exit(EXIT_SUCCESS);
+            break;
+
+        case 'c':
+            option = OPT_COMMAND;
+            if (strlen(optarg) < sizeof(command) - 1) {
+                strcpy(command, optarg);
+            } else {
+                print_usage(argv[0]);
+                exit(EXIT_FAILURE);
+            }
             break;
 
         case 'd':
@@ -375,7 +398,7 @@ int main(int argc, char **argv)
         print_usage(argv[0]);
         exit(EXIT_SUCCESS);
     }
-    if ((set == 1) && (value[0] == '\0')) {
+    if ((option == OPT_SET) && (value[0] == '\0')) {
         print_usage(argv[0]);
         exit(EXIT_FAILURE);
     }
@@ -394,7 +417,7 @@ int main(int argc, char **argv)
     }
     printf("Size of mmap.info: %d\n", sizeof(mmap_info_s));
 
-    if (set == 1) {
+    if (option == OPT_SET) {
         if (strcmp("mic_volume", param) == 0) {
             ivalue = str2int(value);
             if (ivalue == -1) {
@@ -473,7 +496,7 @@ int main(int argc, char **argv)
         } else {
             printf("Invalid parameter: %s\n", param);
         }
-    } else {
+    } else if (option == OPT_GET) {
         if (strcmp("mic_volume", param) == 0) {
             p2p_get_mic_volume();
         } else if (strcmp("power_mode", param) == 0) {
@@ -496,6 +519,22 @@ int main(int argc, char **argv)
             cloud_get_tz_offset();
         } else {
             printf("Invalid parameter: %s\n", param);
+        }
+    } else if (option == OPT_COMMAND) {
+        if (strcmp("cap_pic", command) == 0) {
+            time_t now = time(NULL);
+            char nameBuff[L_tmpnam + 4];
+            tmpnam(nameBuff);
+            strcat(nameBuff, ".jpg");
+            cloud_cap_pic(nameBuff);
+            printf("Writing file %s\n", nameBuff);
+        } else if (strcmp("make_video", command) == 0) {
+            time_t now = time(NULL);
+            char nameBuff[L_tmpnam + 4];
+            tmpnam(nameBuff);
+            strcat(nameBuff, ".mp4");
+            cloud_make_video(nameBuff, 10, RCD_START_SHORT_VIDEO_10S, now);
+            printf("Writing file %s\n", nameBuff);
         }
     }
 

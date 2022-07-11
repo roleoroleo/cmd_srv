@@ -81,6 +81,8 @@
 #define MAX_SESSION_NUM 8
 #define MAX_VIEWING_NUM 6
 
+#define VC_RECORD_DURATION 15
+
 typedef struct
 {
     int preset_enable;
@@ -292,17 +294,26 @@ typedef enum {
     DISPATCH_SET_TNP_WORK_MODE = 0x80,
     DISPATCH_SET_VIDEO_BACKUP_STATE = 0x87,
     DISPATCH_SYNC_INFO_FROM_SERVER = 0x89,
+    RMM_START_CAPTURE = 0x1007,
+    RMM_SPEAK_BAN_DEVICE = 0x100d,
     RMM_SET_MOTION_DETECT = 0x1023,
     RMM_SET_DAY_NIGHT_MODE = 0x1024,
     RMM_SET_MOTION_SENSITIVITY = 0x1027,
     RMM_SET_LDC = 0x1028,
     RMM_SET_BABY_CRY = 0x1029,
     RMM_SET_MIC_VOLUME = 0x102a,
+    RMM_START_PANORAMA_CAPTURE = 0x102b,
+    RMM_ABORT_PANORAMA_CAPTURE = 0x102c,
     RMM_SET_ENCODE_MODE = 0x1032,
     RMM_SET_HIGH_RESOLUTION = 0x1033,
     RMM_SET_ABNORMAL_SOUND = 0x103a,
     RMM_SET_ABNORMAL_SOUND_SENSITIVITY = 0x103b,
     RMM_SET_HUMAN_MOTION = 0x103c,
+    RCD_START_SHORT_VIDEO = 0x2000,
+    RCD_START_SHORT_VIDEO_10S = 0x2001,
+    RCD_START_VOICECMD_VIDEO = 0x2002,
+    RCD_START_SHORT_FACE_VIDEO = 0x2003,
+    RCD_START_SHORT_HUMAN_VIDEO = 0x2004,
     DISPATCH_SET_VIEWPOINT_TRACE = 0x3002
 } MSG_TYPE;
 
@@ -329,6 +340,20 @@ typedef struct
     int resolution;
     rect_t rect;
 } SMsAVIoctrlMotionDetectCfg;
+
+typedef struct
+{
+    char fileName[64];
+    time_t eventTime;
+} rcd_short_video_info_t;
+
+typedef enum
+{
+    E_NORMAL_TYPE = 0,
+    E_FACE_TYPE,
+    E_HUMAN_TYPE,
+    E_BUTT
+} e_short_video_type;
 
 void dump_string(char *source_file, const char *func, int line, char *text, ...);
 int p2p_send_msg(mqd_t mqfd, MSG_TYPE msg_type, char *payload, int payload_len);
