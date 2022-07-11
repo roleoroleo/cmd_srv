@@ -258,7 +258,7 @@ int str2motion_rect(motion_rect_t *mr, char *value)
 void print_usage(char *progname)
 {
     fprintf(stderr, "\nUsage: %s OPTIONS\n\n", progname);
-    fprintf(stderr, "\t-s PARAM, --set PARAM\n");
+    fprintf(stderr, "\t-s PARAM, --set PARAM (use -v)\n");
     fprintf(stderr, "\t\tset PARAM to value\n");
     fprintf(stderr, "\t-g PARAM, --get PARAM\n");
     fprintf(stderr, "\t\tget PARAM value\n");
@@ -266,10 +266,10 @@ void print_usage(char *progname)
     fprintf(stderr, "\t\tvalue to set\n");
     fprintf(stderr, "\t-c CMD, --command CMD\n");
     fprintf(stderr, "\t\tsend CMD command\n");
+    fprintf(stderr, "\t-l, --list\n");
+    fprintf(stderr, "\t\tprint all available parameters and commands\n");
     fprintf(stderr, "\t-d, --debug\n");
     fprintf(stderr, "\t\tenable debug\n");
-    fprintf(stderr, "\t-l, --list\n");
-    fprintf(stderr, "\t\tprint all available parameters\n");
     fprintf(stderr, "\t-h, --help\n");
     fprintf(stderr, "\t\tprint this help\n");
 }
@@ -347,7 +347,6 @@ int main(int argc, char **argv)
 
         case 'l':
             printf("List of parameters:\n");
-            printf("\tmic_volume\n");
             printf("\tpower_mode\n");
             printf("\tlight_mode\n");
             printf("\trecord_mode\n");
@@ -356,6 +355,16 @@ int main(int argc, char **argv)
             printf("\thuman_motion_enable\n");
             printf("\tirlight_mode\n");
             printf("\tmotion_sensitivity\n");
+            printf("\tvideo_backup_info\n");
+            printf("\tencode_mode\n");
+            printf("\thigh_resolution\n");
+            printf("\tldc_percent\n");
+            printf("\tbaby_cry_enable\n");
+            printf("\tabnormal_sound_enable\n");
+            printf("\tabnormal_sound_sensitivity\n");
+            printf("\tmic_volume\n");
+            printf("\ttf_status\n");
+            printf("\tviewpoint_trace\n");
             printf("\ttz_offset\n");
             printf("\n");
             printf("List of commands:\n");
@@ -418,14 +427,7 @@ int main(int argc, char **argv)
     printf("Size of mmap.info: %d\n", sizeof(mmap_info_s));
 
     if (option == OPT_SET) {
-        if (strcmp("mic_volume", param) == 0) {
-            ivalue = str2int(value);
-            if (ivalue == -1) {
-                printf("Invalid value: %s\n", value);
-                return -2;
-            }
-            p2p_set_mic_volume(ivalue);
-        } else if (strcmp("power_mode", param) == 0) {
+        if (strcmp("power_mode", param) == 0) {
             ivalue = str2int(value);
             if (ivalue == -1) {
                 printf("Invalid value: %s\n", value);
@@ -486,6 +488,66 @@ int main(int argc, char **argv)
                 return -2;
             }
             p2p_set_alarm_sensitivity(ivalue);
+        } else if (strcmp("video_backup_info", param) == 0) {
+            printf("Not supported\n");
+        } else if (strcmp("encode_mode", param) == 0) {
+            ivalue = str2int(value);
+            if (ivalue == -1) {
+                printf("Invalid value: %s\n", value);
+                return -2;
+            }
+            p2p_set_encode_mode(ivalue);
+        } else if (strcmp("high_resolution", param) == 0) {
+            ivalue = str2int(value);
+            if (ivalue == -1) {
+                printf("Invalid value: %s\n", value);
+                return -2;
+            }
+            p2p_set_high_resolution(ivalue);
+        } else if (strcmp("ldc_percent", param) == 0) {
+            ivalue = str2int(value);
+            if (ivalue == -1) {
+                printf("Invalid value: %s\n", value);
+                return -2;
+            }
+            p2p_set_ldc(ivalue);
+        } else if (strcmp("baby_cry_enable", param) == 0) {
+            ivalue = str2int(value);
+            if (ivalue == -1) {
+                printf("Invalid value: %s\n", value);
+                return -2;
+            }
+            p2p_set_baby_cry(ivalue);
+        } else if (strcmp("abnormal_sound_enable", param) == 0) {
+            ivalue = str2int(value);
+            if (ivalue == -1) {
+                printf("Invalid value: %s\n", value);
+                return -2;
+            }
+            p2p_set_abnormal_sound(ivalue);
+        } else if (strcmp("abnormal_sound_sensitivity", param) == 0) {
+            ivalue = str2int(value);
+            if (ivalue == -1) {
+                printf("Invalid value: %s\n", value);
+                return -2;
+            }
+            p2p_set_abnormal_sound_sensitivity(ivalue);
+        } else if (strcmp("mic_volume", param) == 0) {
+            ivalue = str2int(value);
+            if (ivalue == -1) {
+                printf("Invalid value: %s\n", value);
+                return -2;
+            }
+            p2p_set_mic_volume(ivalue);
+        } else if (strcmp("tf_status", param) == 0) {
+            printf("Not supported\n");
+        } else if (strcmp("viewpoint_trace", param) == 0) {
+            ivalue = str2int(value);
+            if (ivalue == -1) {
+                printf("Invalid value: %s\n", value);
+                return -2;
+            }
+            p2p_set_viewpoint_trace(ivalue);
         } else if (strcmp("tz_offset", param) == 0) {
             ivalue = str2int(value);
             if (ivalue == -1) {
@@ -497,9 +559,7 @@ int main(int argc, char **argv)
             printf("Invalid parameter: %s\n", param);
         }
     } else if (option == OPT_GET) {
-        if (strcmp("mic_volume", param) == 0) {
-            p2p_get_mic_volume();
-        } else if (strcmp("power_mode", param) == 0) {
+        if (strcmp("power_mode", param) == 0) {
             p2p_get_power();
         } else if (strcmp("light_mode", param) == 0) {
             p2p_get_light();
@@ -515,6 +575,26 @@ int main(int argc, char **argv)
             p2p_get_day_night_mode();
         } else if (strcmp("motion_sensitivity", param) == 0) {
             p2p_get_alarm_sensitivity();
+        } else if (strcmp("video_backup_info", param) == 0) {
+            p2p_get_video_backup_state();
+        } else if (strcmp("encode_mode", param) == 0) {
+            p2p_get_encode_mode();
+        } else if (strcmp("high_resolution", param) == 0) {
+            p2p_get_high_resolution();
+        } else if (strcmp("ldc_percent", param) == 0) {
+            p2p_get_ldc();
+        } else if (strcmp("baby_cry_enable", param) == 0) {
+            p2p_get_baby_cry();
+        } else if (strcmp("abnormal_sound_enable", param) == 0) {
+            p2p_get_abnormal_sound();
+        } else if (strcmp("abnormal_sound_sensitivity", param) == 0) {
+            p2p_get_abnormal_sound_sensitivity();
+        } else if (strcmp("mic_volume", param) == 0) {
+            p2p_get_mic_volume();
+        } else if (strcmp("tf_status", param) == 0) {
+            p2p_get_sd_state();
+        } else if (strcmp("viewpoint_trace", param) == 0) {
+            p2p_get_viewpoint_trace();
         } else if (strcmp("tz_offset", param) == 0) {
             cloud_get_tz_offset();
         } else {
