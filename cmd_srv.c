@@ -244,8 +244,11 @@ int str2motion_rect(motion_rect_t *mr, char *value)
         el = str2int(p);
         if (el == -1) return -1;
         array[i++] = el;
-        p = strtok (NULL, ".");
+        p = strtok (NULL, ",");
     }
+
+    if (i != 6) return -1;
+
     mr->mode = array[0];
     mr->resolution = array[1];
     mr->left = array[2];
@@ -253,6 +256,7 @@ int str2motion_rect(motion_rect_t *mr, char *value)
     mr->right = array[4];
     mr->bottom = array[5];
 
+    return 0;
 }
 
 void print_usage(char *progname)
