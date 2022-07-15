@@ -415,6 +415,34 @@ typedef enum
     E_BUTT
 } e_short_video_type;
 
+typedef enum {
+    REGION_CHINA = 0x1,
+    REGION_SOUTHEAST_ASIA = 0x9,
+    REGION_EUROPE = 0x10,
+    REGION_AMERICA = 0x11
+} REGION_ID;
+
+typedef enum {
+    LANG_DEFAULT = 0x3
+//    ...
+} LANG_TYPE;
+
+typedef struct
+{
+    REGION_ID region_id;
+    LANG_TYPE language;
+    char api_server[128];
+    char sname[64];
+    char dlproto[64];
+} set_region_msg;
+
+typedef enum {
+    MOTION_TYPE_MOTION = 0x0,
+    MOTION_TYPE_MOTION_TRACKING = 0x1,
+    MOTION_TYPE_HUMAN = 0x2,
+    MOTION_TYPE_FACE = 0x7
+} MOTION_TYPE;
+
 void dump_string(char *source_file, const char *func, int line, char *text, ...);
 int p2p_send_msg(mqd_t mqfd, MSG_TYPE msg_type, char *payload, int payload_len);
 int cloud_send_msg(mqd_t mqfd, MSG_TYPE msg_type, char *payload, int payload_len);
