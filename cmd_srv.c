@@ -231,6 +231,27 @@ int str2int(char *value)
     return ret;
 }
 
+unsigned char str2uc(char *value)
+{
+    char *endptr;
+    int errno;
+    int ret;
+
+    errno = 0;    /* To distinguish success/failure after call */
+
+    ret = strtol(value, &endptr, 10);
+
+    /* Check for various possible errors */
+    if ((errno == ERANGE && (ret == LONG_MAX || ret == LONG_MIN)) || (errno != 0)) {
+        return -1;
+    }
+    if (endptr == optarg) {
+        return -1;
+    }
+
+    return (unsigned char) (ret & 0xff);
+}
+
 /* Only positive numbers */
 int str2motion_rect(motion_rect_t *mr, char *value)
 {
@@ -255,6 +276,44 @@ int str2motion_rect(motion_rect_t *mr, char *value)
     mr->top = array[3];
     mr->right = array[4];
     mr->bottom = array[5];
+
+    return 0;
+}
+
+int str2region(set_region_msg *msg, char *value)
+{
+    char *p = strtok (value, ",");
+
+    if (p != NULL)
+    {
+        msg->region_id = str2int(p);
+        if (msg->region_id == -1) return -1;
+    }
+    p = strtok (NULL, ",");
+
+    if (p != NULL)
+    {
+        msg->language = str2int(p);
+        if (msg->language == -1) return -1;
+    }
+    p = strtok (NULL, ",");
+
+    if (p != NULL)
+    {
+        snprintf(msg->api_server, sizeof(msg->api_server), "%s", p);
+    }
+    p = strtok (NULL, ",");
+
+    if (p != NULL)
+    {
+        snprintf(msg->sname, sizeof(msg->sname), "%s", p);
+    }
+    p = strtok (NULL, ",");
+
+    if (p != NULL)
+    {
+        snprintf(msg->dlproto, sizeof(msg->dlproto), "%s", p);
+    }
 
     return 0;
 }
