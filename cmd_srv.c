@@ -348,6 +348,7 @@ int main(int argc, char **argv)
     char value[1024] = {0};
     char command[1024] = {0};
     int ivalue;
+    unsigned char ucvalue;
     int debug = 0;
 
     while (1) {
@@ -428,11 +429,21 @@ int main(int argc, char **argv)
             printf("\tmic_volume\n");
             printf("\ttf_status\n");
             printf("\tviewpoint_trace\n");
+            printf("\tvoice_ctrl\n");
+            printf("\tlapse_video_enable\n");
             printf("\ttz_offset\n");
+            printf("\tmotion_stat\n");
+            printf("\tmotion_type\n");
+            printf("\tmotion_time\n");
+            printf("\tdebug_mode\n");
+            printf("\tregion\n");
             printf("\n");
             printf("List of commands:\n");
             printf("\tcap_pic\n");
             printf("\tmake_video\n");
+            printf("\tset_abnormal_sound_occur\n");
+            printf("\tset_babycry_occur\n");
+            printf("\tset_debug_info\n");
             exit(EXIT_SUCCESS);
             break;
 
@@ -551,8 +562,6 @@ int main(int argc, char **argv)
                 return -2;
             }
             p2p_set_alarm_sensitivity(ivalue);
-        } else if (strcmp("video_backup_info", param) == 0) {
-            printf("Not supported\n");
         } else if (strcmp("encode_mode", param) == 0) {
             ivalue = str2int(value);
             if (ivalue == -1) {
@@ -602,15 +611,27 @@ int main(int argc, char **argv)
                 return -2;
             }
             p2p_set_mic_volume(ivalue);
-        } else if (strcmp("tf_status", param) == 0) {
-            printf("Not supported\n");
         } else if (strcmp("viewpoint_trace", param) == 0) {
+            ucvalue = str2uc(value);
+            if (ucvalue == -1) {
+                printf("Invalid value: %s\n", value);
+                return -2;
+            }
+            p2p_set_viewpoint_trace(ucvalue);
+        } else if (strcmp("voice_ctrl", param) == 0) {
+            ucvalue = str2uc(value);
+            if (ucvalue == -1) {
+                printf("Invalid value: %s\n", value);
+                return -2;
+            }
+            p2p_set_voice_ctrl(ucvalue);
+        } else if (strcmp("lapse_video_enable", param) == 0) {
             ivalue = str2int(value);
             if (ivalue == -1) {
                 printf("Invalid value: %s\n", value);
                 return -2;
             }
-            p2p_set_viewpoint_trace(ivalue);
+            p2p_set_lapse_video(ivalue);
         } else if (strcmp("tz_offset", param) == 0) {
             ivalue = str2int(value);
             if (ivalue == -1) {
@@ -618,6 +639,17 @@ int main(int argc, char **argv)
                 return -2;
             }
             cloud_set_tz_offset(ivalue);
+        } else if (strcmp("debug_mode", param) == 0) {
+            cloud_set_debug_mode();
+        } else if (strcmp("region", param) == 0) {
+            set_region_msg region_msg;
+            ivalue = str2region(&region_msg, value);
+            if (ivalue == -1) {
+                printf("Invalid value: %s\n", value);
+                return -2;
+            }
+            cloud_set_region(region_msg.region_id, region_msg.language,
+                    region_msg.api_server, region_msg.sname, region_msg.dlproto);
         } else {
             printf("Invalid parameter: %s\n", param);
         }
@@ -658,8 +690,22 @@ int main(int argc, char **argv)
             p2p_get_sd_state();
         } else if (strcmp("viewpoint_trace", param) == 0) {
             p2p_get_viewpoint_trace();
+        } else if (strcmp("voice_ctrl", param) == 0) {
+            p2p_get_voice_ctrl();
+        } else if (strcmp("lapse_video_enable", param) == 0) {
+            p2p_get_lapse_video();
         } else if (strcmp("tz_offset", param) == 0) {
             cloud_get_tz_offset();
+        } else if (strcmp("motion_stat", param) == 0) {
+            cloud_get_motion_state();
+        } else if (strcmp("motion_type", param) == 0) {
+            cloud_get_motion_type();
+        } else if (strcmp("motion_time", param) == 0) {
+            cloud_get_motion_time();
+        } else if (strcmp("debug_mode", param) == 0) {
+            cloud_get_debug_mode();
+        } else if (strcmp("region", param) == 0) {
+            cloud_get_region();
         } else {
             printf("Invalid parameter: %s\n", param);
         }
@@ -678,6 +724,12 @@ int main(int argc, char **argv)
             strcat(nameBuff, ".mp4");
             cloud_make_video(nameBuff, 10, RCD_START_SHORT_VIDEO_10S, now);
             printf("Writing file %s\n", nameBuff);
+        } else if (strcmp("set_abnormal_sound_occur", command) == 0) {
+            cloud_set_abnormal_sound_occur();
+        } else if (strcmp("set_babycry_occur", command) == 0) {
+            cloud_set_babycry_occur();
+        } else if (strcmp("set_debug_info", command) == 0) {
+            cloud_set_debug_info();
         }
     }
 

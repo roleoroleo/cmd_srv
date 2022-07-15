@@ -198,9 +198,69 @@ int p2p_get_sd_state()
     return ret;
 }
 
+int p2p_get_voice_ctrl()
+{
+    int ret;
+    ret = g_p2ptnp_info.mmap_info->voice_ctrl;
+    printf("p2p_get_voice_ctrl() return (%d) \n", ret);
+}
+
+int p2p_get_lapse_video()
+{
+    int ret;
+    ret = g_p2ptnp_info.mmap_info->lapse_video_enable;
+    printf("p2p_get_lapse_video() return (%d) \n", ret);
+}
+
 int cloud_get_tz_offset()
 {
     int ret;
     ret = g_p2ptnp_info.mmap_info->tz_offset;
-    printf("p2p_get_tz_offset() return (%d) \n", ret);
+    printf("cloud_get_tz_offset() return (%d) \n", ret);
+}
+
+int cloud_get_motion_state()
+{
+    int ret;
+    ret = g_p2ptnp_info.mmap_info->motion_stat;
+    printf("cloud_get_motion_state() return (%d) \n", ret);
+}
+
+int cloud_get_motion_type()
+{
+    int ret;
+    ret = g_p2ptnp_info.mmap_info->motion_type;
+    printf("cloud_get_motion_type() return (%d) \n", ret);
+}
+
+int cloud_get_motion_time()
+{
+    int ret;
+    ret = g_p2ptnp_info.mmap_info->motion_time;
+    printf("cloud_get_motion_time() return (%d) \n", ret);
+}
+
+int cloud_get_debug_mode()
+{
+    int ret;
+    ret = g_p2ptnp_info.mmap_info->debug_mode;
+    printf("cloud_get_debug_mode() return (%d) \n", ret);
+}
+
+int cloud_get_region()
+{
+    set_region_msg msg;
+
+    msg.region_id = g_p2ptnp_info.mmap_info->region_id;
+    msg.language = g_p2ptnp_info.mmap_info->language;
+    snprintf(msg.api_server, sizeof(msg.api_server), "%s", g_p2ptnp_info.mmap_info->api_server);
+    snprintf(msg.sname, sizeof(msg.sname), "%s", g_p2ptnp_info.mmap_info->sname);
+    snprintf(msg.dlproto, sizeof(msg.dlproto), "%s", g_p2ptnp_info.mmap_info->dlproto);
+
+    printf("p2p_get_region() return\nregion_id %d\nlanguage %d\n"
+            "api_server %s\nsname %s\ndlproto %s\n",
+            msg.region_id, msg.language,
+            msg.api_server, msg.sname, msg.dlproto);
+
+    return 0;
 }

@@ -60,3 +60,45 @@ int cloud_make_video(char *video_name, int second, e_short_video_type short_vide
         return 0;
     }
 }
+
+int cloud_set_abnormal_sound_occur()
+{
+    if(cloud_send_msg(ipc_mq, DISPATCH_ABNORMAL_SOUND_OCCUR, NULL, 0) < 0)
+    {
+        dump_string(_F_, _FU_, _L_,  "cloud_set_abnormal_sound_occur send_msg fail!\n");
+    }
+    else
+    {
+        dump_string(_F_, _FU_, _L_,  "cloud_set_abnormal_sound_occur send_msg ok!\n");
+    }
+
+    return 0;
+}
+
+int cloud_set_babycry_occur()
+{
+    if(cloud_send_msg(ipc_mq, DISPATCH_BABYCRY_OCCUR, NULL, 0) < 0)
+    {
+        dump_string(_F_, _FU_, _L_,  "cloud_set_babycry_occur send_msg fail!\n");
+    }
+    else
+    {
+        dump_string(_F_, _FU_, _L_,  "cloud_set_babycry_occur send_msg ok!\n");
+    }
+
+    return 0;
+}
+
+int cloud_set_debug_info()
+{
+    if(cloud_send_msg(ipc_mq, CLOUD_DEBUG_ALARM, NULL, 0) < 0)
+    {
+        dump_string(_F_, _FU_, _L_,  "cloud_set_debug_info send_msg fail!\n");
+        return -1;
+    }
+    else
+    {
+        dump_string(_F_, _FU_, _L_,  "cloud_set_debug_info send_msg ok!\n");
+        return 0;
+    }
+}

@@ -1,3 +1,5 @@
+#include <string.h>
+#include <stdio.h>
 #include <unistd.h>
 #include "cmd_srv.h"
 
@@ -524,11 +526,85 @@ int p2p_set_viewpoint_trace(unsigned char mode)
     return ret;
 }
 
+int p2p_set_voice_ctrl(unsigned char mode)
+{
+    int cnt_down = 50;
+    int ret = 0;
+
+    if(p2p_send_msg(ipc_mq, DISPATCH_SET_VOICE_CTRL, (char *)&mode, sizeof(mode)) < 0)
+    {
+        dump_string(_F_, _FU_, _L_, "p2p_set_voice_ctrl send_msg fail!\n");
+        ret = -1;
+    }
+
+    while(cnt_down-- && (g_p2ptnp_info.mmap_info->voice_ctrl != mode))
+    {
+        usleep(100*1000);
+    }
+
+    return ret;
+}
+
+int p2p_set_lapse_video(int enable)
+{
+    int cnt_down = 50;
+    int ret = 0;
+    if(p2p_send_msg(ipc_mq, DISPATCH_SET_LAPSE_VIDEO, (char *)&enable, sizeof(enable)) < 0)
+    {
+        dump_string(_F_, _FU_, _L_, "p2p_set_lapse_video send_msg fail!\n");
+        ret = -1;
+    }
+    while(cnt_down)
+    {
+        if(g_p2ptnp_info.mmap_info->lapse_video_enable == enable)
+        {
+            break;
+        }
+        cnt_down--;
+        usleep(100*1000);
+    }
+    return ret;
+}
+
 int cloud_set_tz_offset(int tz_offset)
 {
     if(cloud_send_msg(ipc_mq, DISPATCH_SET_TZ_OFFSET, (char *)&tz_offset, sizeof(tz_offset)) < 0)
     {
         dump_string(_F_, _FU_, _L_,  "cloud_set_tz_offset %d send_msg msg fail!\n", tz_offset);
+    }
+    return 0;
+}
+
+int cloud_set_debug_mode()
+{
+    if(cloud_send_msg(ipc_mq, DISPATCH_SET_DEBUG_MODE, NULL, 0) < 0)
+    {
+        dump_string(_F_, _FU_, _L_,  "cloud_set_debug_mode send_msg fail!\n");
+    }
+    else
+    {
+        dump_string(_F_, _FU_, _L_,  "cloud_set_debug_mode send_msg ok!\n");
+    }
+
+    return 0;
+}
+
+int cloud_set_region(REGION_ID region_id, LANG_TYPE language, char *api_server, char *sname, char *dlproto)
+{
+    set_region_msg msg;
+    memset(&msg, 0, sizeof(msg));
+    msg.region_id = region_id;
+    msg.language = language;
+    snprintf(msg.api_server, sizeof(msg.api_server), "%s", api_server);
+    snprintf(msg.sname, sizeof(msg.sname), "%s", sname);
+    snprintf(msg.dlproto, sizeof(msg.dlproto), "%s", dlproto);
+    if(cloud_send_msg(ipc_mq, DISPATCH_SET_REGION, (char *)&msg, sizeof(msg)) < 0)
+    {
+        dump_string(_F_, _FU_, _L_,  "cloud_set_region send_msg fail!\n");
+    }
+    else
+    {
+        dump_string(_F_, _FU_, _L_,  "cloud_set_region send_msg ok!\n");
     }
     return 0;
 }

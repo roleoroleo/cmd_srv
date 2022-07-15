@@ -17,7 +17,15 @@ int p2p_get_abnormal_sound();
 int p2p_get_abnormal_sound_sensitivity();
 int p2p_get_mic_volume();
 int p2p_get_viewpoint_trace();
+int p2p_get_voice_ctrl();
+int p2p_get_lapse_video();
 
 int p2p_get_sd_state();
 
 int cloud_get_tz_offset();
+int cloud_get_motion_state();
+int cloud_get_motion_type();
+int cloud_get_motion_time();
+int cloud_get_debug_mode();
+int cloud_get_region();
+
