@@ -121,8 +121,14 @@ typedef struct {
 
 typedef struct
 {
-    unsigned char unknown_01[0x1cc];		// 0x0
-    char protocol[4];				// 0x1cc char[4]
+    unsigned char unknown_00[0x4];		// 0x0
+    int region_id;				// 0x4   int (4 bytes)
+    int language;				// 0x8   int (4 bytes)
+    char api_server[128];			// 0xc   char[128]
+    unsigned char unknown_01[0x80];		// 0x8c
+    char log_server[128];			// 0x10c char[128]
+    char sname[64];				// 0x18c char[64]
+    char dlproto[4];				// 0x1cc char[4]
     unsigned char unknown_02[0x3c];		// 0x1d0
     unsigned int systick;			// 0x20c unsigned int (4 bytes)
     char version[32];				// 0x210 char[21]
@@ -158,44 +164,48 @@ typedef struct
     unsigned char unknown_15[0x8];		// 0x578
     int sd_size;				// 0x580 int (4 bytes)
     int sd_leftsize;				// 0x584 int (4 bytes)
-    unsigned char unknown_16[0x30];		// 0x588
+    unsigned char unknown_16[0x20];		// 0x588
+    int motion_stat;				// 0x5a8 int (4 bytes)
+    int motion_type;				// 0x5ac int (4 bytes)
+    int motion_time;				// 0x5b0 int (4 bytes)
+    unsigned char unknown_17[0x4];		// 0x5b4
     motion_rect_t motion_rect;			// 0x5b8 motion_rect (16 bytes)
-    unsigned char unknown_17[0x10];		// 0x5c8
+    unsigned char unknown_18[0x10];		// 0x5c8
     int mirror;					// 0x5d8 int (4 bytes)
     int light_mode;				// 0x5dc int (4 bytes)
     int power_mode;				// 0x5e0 int (4 bytes)
-    unsigned char unknown_18[0x4];		// 0x5e4
+    unsigned char unknown_19[0x4];		// 0x5e4
     int irlight_mode;				// 0x5e8 int (4 bytes)
     int record_mode;				// 0x5ec int (4 bytes)
-    unsigned char unknown_19[0x27c];		// 0x5f0
+    unsigned char unknown_20[0x27c];		// 0x5f0
     int debug_mode;				// 0x86c int (4 bytes)
     int video_occlusion;			// 0x870 int (4 bytes)
-    unsigned char unknown_20[0x8];		// 0x874
+    unsigned char unknown_21[0x8];		// 0x874
     int ptz_sleep;				// 0x87c int (4 bytes)
     int ptz_cruise_flag;			// 0x880 int (4 bytes)
-    unsigned char unknown_21[0x8];		// 0x884
+    unsigned char unknown_22[0x8];		// 0x884
     ptz_info_t ptz_info[8];			// 0x88c ptz_info_t[8] (96 bytes)
     int ptz_panoramic_sleep;			// 0x8ec int (4 bytes)
     int ptz_cruise_mode;			// 0x8f0 int (4 bytes)
     int ptz_cruise_start_time;			// 0x8f4 int (4 bytes)
     int ptz_cruise_end_time;			// 0x8f8 int (4 bytes)
     int ptz_motion_track_switch;		// 0x8fc int (4 bytes)
-    unsigned char unknown_22[0x6];		// 0x900
+    unsigned char unknown_23[0x6];		// 0x900
     unsigned char is_xiaomirouter;		// 0x906 unsigned char (1 byte)
     unsigned char motion_sensitivity;		// 0x907 unsigned char (1 byte)
     unsigned char abnormal_sound_sensitivity;	// 0x908 unsigned char (1 byte)
-    unsigned char unknown_23[0x3];		// 0x909
+    unsigned char unknown_24[0x3];		// 0x909
     tf_status_t tf_status;			// 0x90c tf_status_t (? bytes)
-    unsigned char unknown_24[0x50];		// 0x910
+    unsigned char unknown_25[0x50];		// 0x910
     video_backup_info_t video_backup_info;	// 0x960 video_backup_info (28 bytes)
-    unsigned char unknown_25[0xc];		// 0x97c
+    unsigned char unknown_26[0xc];		// 0x97c
     unsigned char viewpoint_trace;		// 0x988 unsigned char (1 byte)
     unsigned char voice_ctrl;			// 0x989 unsigned char (1 byte)
-    unsigned char unknown_26[0x1e];		// 0x98a
+    unsigned char unknown_27[0x1e];		// 0x98a
     int lapse_video_enable;			// 0x9a8 int (4 bytes)
-    unsigned char unknown_27[0x4];		// 0x9ac
+    unsigned char unknown_28[0x4];		// 0x9ac
     int lapse_video_end_time;			// 0x9b0 int (4 bytes)
-    unsigned char unknown_28[0xc];		// 0x9b4
+    unsigned char unknown_29[0xc];		// 0x9b4
     unsigned char speak_mode;			// 0x9c0 unsigned char (1 byte)
     char aec_key[11];				// 0x9c1 char[11]
 } __attribute__((packed)) mmap_info_s;
